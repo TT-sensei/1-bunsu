@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>魔法のすうじ「1」のへんしん！</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f0f8ff; text-align: center; padding: 20px; }
+        #game-container { background: white; max-width: 500px; margin: 0 auto; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .question { font-size: 2rem; margin-bottom: 20px; font-weight: bold; color: #333; }
+        .step-box { background: #fff9c4; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 2px dashed #ffb300; display: none; }
+        .fraction-input { font-size: 1.5rem; width: 50px; text-align: center; border: 2px solid #ccc; border-radius: 5px; }
+        .fraction-line { border-top: 2px solid #333; width: 50px; margin: 5px auto; }
+        button { background: #4caf50; color: white; border: none; padding: 10px 20px; font-size: 1.2rem; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #45a049; transform: scale(1.05); }
+        #message { margin-top: 20px; font-weight: bold; min-height: 1.5em; }
+        .score { font-size: 1.2rem; color: #ff5722; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="score">🔥 連続せいかい: <span id="combo">0</span></div>
+    <div id="problem-area" class="question">1 - <span id="q-numerator">?</span>/<span id="q-denominator">?</span></div>
+
+    <div id="step1" class="step-box">
+        <p>✨ 1を分数に「へんしん」させよう！</p>
+        <div style="display: inline-block;">
+            <input type="number" id="henshin-num" class="fraction-input"><br>
+            <div class="fraction-line"></div>
+            <input type="number" id="henshin-den" class="fraction-input">
+        </div>
+        <br><br>
+        <button onclick="checkStep1()">へんしん！</button>
+    </div>
+
+    <div id="step2" class="step-box">
+        <p>📝 ひき算をしよう！</p>
+        <span id="display-henshin">5/5</span> - <span id="display-orig">2/5</span> = 
+        <div style="display: inline-block; vertical-align: middle;">
+            <input type="number" id="final-num" class="fraction-input"><br>
+            <div class="fraction-line"></div>
+            <input type="number" id="final-den" class="fraction-input" readonly>
+        </div>
+        <br><br>
+        <button onclick="checkFinal()">こたえあわせ</button>
+    </div>
+
+    <div id="message"></div>
+</div>
+
+<script>
+    let qDen, qNum, combo = 0;
+
+    function initGame() {
+        qDen = Math.floor(Math.random() * 8) + 2; // 分母 2~9
+        qNum = Math.floor(Math.random() * (qDen - 1)) + 1; // 分子 1~分母未満
+        
+        document.getElementById('q-numerator').innerText = qNum;
+        document.getElementById('q-denominator').innerText = qDen;
+        document.getElementById('message').innerText = "まずは「1」をへんしんさせてね！";
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        
+        // クリア
+        document.querySelectorAll('input').forEach(i => i.value = '');
+    }
+
+    function checkStep1() {
+        const hNum = document.getElementById('henshin-num').value;
+        const hDen = document.getElementById('henshin-den').value;
+        
+        if(hNum == qDen && hDen == qDen) {
+            document.getElementById('message').innerText = "すごい！正解！そのまま計算だ！";
+            document.getElementById('display-henshin').innerText = `${hNum}/${hDen}`;
+            document.getElementById('display-orig').innerText = `${qNum}/${qDen}`;
+            document.getElementById('final-den').value = qDen;
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        } else {
+            document.getElementById('message').innerText = `おっと！ひく分数の下の数字「${qDen}」に合わせてみて！`;
+        }
+    }
+
+    function checkFinal() {
+        const fNum = document.getElementById('final-num').value;
+        if(fNum == (qDen - qNum)) {
+            combo++;
+            document.getElementById('combo').innerText = combo;
+            document.getElementById('message').innerText = "✨完ペキ！✨ つぎの問題にいくよ！";
+            setTimeout(initGame, 1500);
+        } else {
+            document.getElementById('message').innerText = "おしい！上の数字だけ引き算してみて。";
+        }
+    }
+
+    initGame();
+</script>
+
+</body>
+</html>
