@@ -3,131 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分数へんしんバトル！</title>
+    <title>分数へんしんマスター！</title>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #FF9800;
-            --secondary: #4CAF50;
-            --bg: #FFF9E1;
+        :root { --primary: #FF9800; --secondary: #4CAF50; --bg: #FFF9E1; }
+        body { font-family: 'M PLUS Rounded 1c', sans-serif; background-color: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        #game-card { 
+            background: white; width: 95%; max-width: 500px; padding: 30px 15px; border-radius: 40px; 
+            border: 8px solid #FFCC80; box-shadow: 0 10px 0 #E6B47E; text-align: center; 
         }
 
-        body {
-            font-family: 'M PLUS Rounded 1c', sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
+        /* 元の問題をハッキリ見せるエリア */
+        .original-problem {
+            background: #fdf2d2; padding: 15px; border-radius: 20px; border: 3px solid #FFB74D;
+            font-size: 2.5rem; margin-bottom: 25px; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
 
-        #game-card {
-            background: white;
-            width: 90%;
-            max-width: 500px;
-            padding: 40px 20px;
-            border-radius: 40px;
-            border: 10px solid #FFCC80;
-            box-shadow: 0 15px 0 #E6B47E;
-            text-align: center;
-            position: relative;
+        .status-bar { display: flex; justify-content: space-between; margin-bottom: 15px; color: #795548; font-size: 1rem; }
+
+        /* 計算作業エリア */
+        .work-area {
+            background: #f0faff; border: 4px dashed #81D4FA; padding: 20px; border-radius: 25px; margin-bottom: 20px;
         }
 
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            color: #795548;
-        }
+        .formula-container { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 2.5rem; min-height: 120px; }
 
-        /* 数式のスタイル */
-        .formula-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            font-size: 3.5rem;
-            margin: 30px 0;
-            min-height: 150px;
-        }
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
+        .fraction-line { width: 55px; height: 4px; background-color: #333; margin: 4px 0; }
 
-        .fraction {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            vertical-align: middle;
-        }
-
-        .fraction-line {
-            width: 70px;
-            height: 5px;
-            background-color: #333;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-
-        /* 入力ボックス */
         input {
-            width: 70px;
-            height: 70px;
-            font-size: 2.5rem;
-            text-align: center;
-            border: 4px solid #ddd;
-            border-radius: 15px;
-            font-family: 'M PLUS Rounded 1c', sans-serif;
-            transition: 0.3s;
+            width: 60px; height: 60px; font-size: 2rem; text-align: center; border: 3px solid #ddd;
+            border-radius: 12px; font-family: inherit; transition: 0.2s;
         }
+        input:focus { border-color: var(--primary); outline: none; background: #FFFDE7; }
+        input.correct { border-color: var(--secondary); background-color: #E8F5E9; }
 
-        input:focus {
-            border-color: var(--primary);
-            background-color: #FFFDE7;
-            outline: none;
+        #hint-text { color: #0277BD; font-size: 1.1rem; min-height: 3em; margin-top: 10px; }
+        .btn-action {
+            background: var(--primary); color: white; border: none; padding: 12px 40px;
+            font-size: 1.4rem; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 #E65100;
         }
-
-        input.correct {
-            border-color: var(--secondary);
-            background-color: #E8F5E9;
-        }
-
-        /* メッセージ */
-        #hint-box {
-            background: #E1F5FE;
-            padding: 15px;
-            border-radius: 20px;
-            color: #0277BD;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            min-height: 3em;
-        }
-
-        .btn-next {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 50px;
-            font-size: 1.5rem;
-            border-radius: 100px;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #E65100;
-            transition: 0.1s;
-        }
-
-        .btn-next:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #E65100;
-        }
-
-        /* アニメーション */
-        @keyframes success-pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        .pop { animation: success-pop 0.4s ease; }
-
+        .btn-action:active { transform: translateY(3px); box-shadow: 0 2px 0 #E65100; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -136,137 +53,137 @@
 <div id="game-card">
     <div class="status-bar">
         <span>🏆 レベル: <span id="level">1</span></span>
-        <span>✨ けいけんち: <span id="exp">0</span></span>
+        <span>🔥 コンボ: <span id="combo">0</span></span>
     </div>
 
-    <div id="hint-box">
-        ひく数の 下の数字を 見てごらん！<br>1を 同じ数字に へんしんさせよう！
-    </div>
-
-    <div class="formula-container">
-        <div id="part-1" class="fraction">
-            <input type="number" id="h-num" placeholder="?">
-            <div class="fraction-line"></div>
-            <input type="number" id="h-den" placeholder="?">
-        </div>
-
-        <span id="minus-sign">－</span>
-
+    <div class="original-problem">
+        <span>1</span> <span>－</span>
         <div class="fraction">
-            <span id="q-num">1</span>
+            <span id="q-num">?</span>
             <div class="fraction-line"></div>
-            <span id="q-den">3</span>
+            <span id="q-den">?</span>
         </div>
-
-        <span id="equal-sign" class="hidden">＝</span>
-
-        <div id="part-ans" class="fraction hidden">
-            <input type="number" id="ans-num" placeholder="?">
-            <div class="fraction-line"></div>
-            <input type="number" id="ans-den" readonly style="background: #eee;">
-        </div>
+        <span>＝</span> <span>？</span>
     </div>
 
-    <button id="action-btn" class="btn-next" onclick="process()">OK!</button>
+    <div class="work-area">
+        <div id="step-label" style="color: #0288D1; font-weight: bold; margin-bottom: 10px;">
+            STEP 1: 1をへんしんさせよう！
+        </div>
+        
+        <div class="formula-container">
+            <div class="fraction">
+                <input type="number" id="h-num" placeholder="上">
+                <div class="fraction-line"></div>
+                <input type="number" id="h-den" placeholder="下">
+            </div>
+
+            <span id="minus-sign" class="hidden">－</span>
+
+            <div id="copy-fraction" class="fraction hidden">
+                <span id="q-num-copy"></span>
+                <div class="fraction-line"></div>
+                <span id="q-den-copy"></span>
+            </div>
+
+            <span id="equal-sign" class="hidden">＝</span>
+
+            <div id="ans-fraction" class="fraction hidden">
+                <input type="number" id="ans-num" placeholder="?">
+                <div class="fraction-line"></div>
+                <input type="number" id="ans-den" readonly style="background:#eee">
+            </div>
+        </div>
+        <div id="hint-text">下の数字を見て、1を同じ分母にしよう！</div>
+    </div>
+
+    <button id="main-btn" class="btn-action" onclick="handleStep()">OK!</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
 <script>
-    let currentStep = 1; // 1:変身, 2:計算
-    let qNum, qDen, level = 1, exp = 0;
+    let qNum, qDen, step = 1, combo = 0, level = 1;
 
     const hNum = document.getElementById('h-num');
     const hDen = document.getElementById('h-den');
     const ansNum = document.getElementById('ans-num');
     const ansDen = document.getElementById('ans-den');
-    const hintBox = document.getElementById('hint-box');
-    const actionBtn = document.getElementById('action-btn');
+    const hint = document.getElementById('hint-text');
+    const stepLabel = document.getElementById('step-label');
 
-    function initGame() {
-        // 問題作成
-        qDen = Math.floor(Math.random() * 8) + 2; // 2〜9
-        qNum = Math.floor(Math.random() * (qDen - 1)) + 1; // 1〜(分母-1)
+    function init() {
+        qDen = Math.floor(Math.random() * 8) + 2;
+        qNum = Math.floor(Math.random() * (qDen - 1)) + 1;
         
         document.getElementById('q-num').textContent = qNum;
         document.getElementById('q-den').textContent = qDen;
-
-        // リセット
-        currentStep = 1;
+        
+        step = 1;
+        stepLabel.textContent = "STEP 1: 1をへんしんさせよう！";
         hNum.value = ""; hDen.value = "";
         hNum.readOnly = false; hDen.readOnly = false;
         hNum.classList.remove('correct'); hDen.classList.remove('correct');
         
-        ansNum.value = "";
+        document.getElementById('minus-sign').classList.add('hidden');
+        document.getElementById('copy-fraction').classList.add('hidden');
         document.getElementById('equal-sign').classList.add('hidden');
-        document.getElementById('part-ans').classList.add('hidden');
+        document.getElementById('ans-fraction').classList.add('hidden');
         
-        hintBox.innerHTML = `「1」を へんしんさせよう！<br>下の数字を <b>${qDen}</b> にすればいいんだよ！`;
-        actionBtn.textContent = "へんしん！";
+        hint.innerHTML = `ひく数の下の数字が「<b>${qDen}</b>」だから...<br>1を「<b>?/${qDen}</b>」の形に直してね！`;
+        document.getElementById('main-btn').textContent = "OK!";
     }
 
-    function process() {
-        if (currentStep === 1) {
-            // 変身チェック
+    function handleStep() {
+        if (step === 1) {
             if (parseInt(hNum.value) === qDen && parseInt(hDen.value) === qDen) {
-                correctStep1();
+                toStep2();
             } else {
-                failEffect(hNum, hDen);
-                hintBox.innerHTML = `おっと！ 上も下も <b>${qDen}</b> にしてみて！`;
+                hint.innerHTML = `<span style="color:red">おっと！1は「上下が同じ数字」の分数になるよ。${qDen}を使ってみよう！</span>`;
             }
-        } else if (currentStep === 2) {
-            // 計算チェック
+        } else if (step === 2) {
             if (parseInt(ansNum.value) === (qDen - qNum)) {
-                correctFinal();
+                finishProblem();
             } else {
-                failEffect(ansNum);
-                hintBox.innerHTML = `おしい！ 上の数字 <b>${qDen} － ${qNum}</b> を計算しよう！`;
+                hint.innerHTML = `<span style="color:red">おしい！上の数字 ${qDen} － ${qNum} を計算しよう！</span>`;
             }
         }
     }
 
-    function correctStep1() {
-        currentStep = 2;
+    function toStep2() {
+        step = 2;
+        stepLabel.textContent = "STEP 2: 引き算をしよう！";
         hNum.readOnly = true; hDen.readOnly = true;
         hNum.classList.add('correct'); hDen.classList.add('correct');
         
+        document.getElementById('minus-sign').classList.remove('hidden');
+        document.getElementById('copy-fraction').classList.remove('hidden');
+        document.getElementById('q-num-copy').textContent = qNum;
+        document.getElementById('q-den-copy').textContent = qDen;
         document.getElementById('equal-sign').classList.remove('hidden');
-        document.getElementById('part-ans').classList.remove('hidden');
+        document.getElementById('ans-fraction').classList.remove('hidden');
         ansDen.value = qDen;
+        ansNum.value = "";
         
-        hintBox.innerHTML = "ナイスへんしん！<br>あとは 上の数字を 引き算するだけ！";
-        actionBtn.textContent = "こたえあわせ！";
-        
-        // ぷるるんアニメ
-        document.getElementById('game-card').classList.add('pop');
-        setTimeout(()=>document.getElementById('game-card').classList.remove('pop'), 400);
+        hint.innerHTML = "いいぞ！1が変身したね。<br>分母はそのままで、上の数字を引き算しよう！";
     }
 
-    function correctFinal() {
+    function finishProblem() {
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-        exp += 20;
-        if(exp >= 100) { level++; exp = 0; }
-        
+        combo++;
+        if(combo % 5 === 0) level++;
+        document.getElementById('combo').textContent = combo;
         document.getElementById('level').textContent = level;
-        document.getElementById('exp').textContent = exp;
         
-        hintBox.innerHTML = "✨完ペキ！✨<br>次の問題も やってみよう！";
-        actionBtn.textContent = "つぎへ！";
-        actionBtn.onclick = () => {
-            initGame();
-            actionBtn.onclick = process;
+        hint.innerHTML = "✨すごーい！大正解！✨";
+        const btn = document.getElementById('main-btn');
+        btn.textContent = "つぎの問題へ";
+        btn.onclick = () => {
+            init();
+            btn.onclick = handleStep;
         };
     }
 
-    function failEffect(...elems) {
-        elems.forEach(el => {
-            el.style.borderColor = "red";
-            setTimeout(() => el.style.borderColor = "#ddd", 500);
-        });
-    }
-
-    initGame();
+    init();
 </script>
-
 </body>
 </html>
